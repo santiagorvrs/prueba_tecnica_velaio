@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<div class="container mt-5" style="text-align-last: center;">
+    <h2 class="text-center">Crear Tarea</h2>
+    <form  class="mb-4">
+        <!-- Campo título -->
+    <div class="mb-3">
+        <label for="taskTitle" class="form-label">Título de la Tarea</label>
+        <input type="text" id="taskTitle" class="form-control" name="title" [(ngModel)]="title" required>
+    </div>
+    <!-- Campo descripción -->
+    <div class="mb-3">
+        <label for="taskDescription" class="form-label">Descripción de la Tarea</label>
+        <textarea id="taskDescription" class="form-control" name="description" [(ngModel)]="description" required></textarea>
+    </div>
+    <!-- Campo fecha límite -->
+    <div class="mb-3">
+        <label for="taskDescription" class="form-label">Fecha límite</label>
+        <input type="date" id="fecha_limite" class="form-control" name="fecha_limite" max="today" [(ngModel)]="fecha_limite" required>
+    </div>
+    <!-- Personas asociadas -->
+    <h2 class="text-center">Personas asociadas: </h2>
+    <!-- Campo nombre persona -->
+    <button (click)="agregarPersona();" ><i class="fas fa-check-circle">Agregar persona</i></button>
+    <div *ngFor="let persona of objeto_personas">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre completo: </label>
+            <button (click)="eliminarCampoPersona(persona);" ><i class="fa fa-exclamation-triangle">Eliminar persona</i></button>
+            <input type="text" id="nombre" class="form-control" placeholder="Mínimo 5 caracteres" name="nombre" [(ngModel)]="persona.nombre_completo" required>
+        </div>
+        <!-- Campo edad -->
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Edad: </label>
+            <input type="number" id="edad" class="form-control" name="edad" placeholder="Mayor a 18 años" [(ngModel)]="persona.edad" required>
+        </div>
+        <!-- Habilidades -->
+        <h2 class="text-center">Habilidades: </h2>
+        <button (click)="agregarHabilidad();" ><i class="fas fa-check-circle">Agregar habilidad</i></button>
+        <div class="mb-3" *ngFor="let habilidad of objeto_habilidades">
+            <label for="nombre" class="form-label">Habilidad: </label>
+            <input type="text" id="habilidad" class="form-control" name="habilidad" [(ngModel)]="habilidad.nombre_habilidad" required>
+            <button (click)="eliminarCampoHabilidad(habilidad);" ><i class="fa fa-exclamation-triangle">Eliminar habilidad</i></button>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <button type="submit" class="btn btn-primary" (click)="validarCamposNulos();">Crear Tarea</button>
+    </form>
+
+    <h2 class="text-center">Lista de Tareas</h2>
+    <button *ngIf="filtro" (click)="quitarFiltro();">Quitar filtro</button>
+    <select name="select" [(ngModel)]="filtro" (change)="filtrar();">
+        <option value="" disabled selected>--Seleccione una opción--</option>
+        <option value="completadas">Tareas completadas</option>
+        <option value="pendiente">Pendientes</option>
+    </select>
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+        <th>Título</th>
+        <th>Descripción</th>
+        <th>Fecha límite</th>
+        <th>Completada</th>
+        <th>Personas asociadas</th>
+        </tr>
+    </thead>
+    <tbody>
+         <tr *ngFor="let task of tareas">
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.fecha_limite }}</td>
+            <td><input type="checkbox" [(ngModel)]="task.completed" (change)="completarTarea(task);"></td>
+            <td><a onclick="document.getElementById('myModal').style.display='block'" (click)="asignarTemporal(task);">Ver más</a></td>
+        </tr>
+    </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <!-- Contenido del Modal -->
+        <div class="modal-content">
+        <span class="close" onclick="document.getElementById('myModal').style.display='none'" (click)="limpiarTemporal();">&times;</span>
+        <h2>Tarea: {{temporal.title}}</h2>
+        <h4>Personas asociadas</h4>
+        <p *ngFor="let persona of temporal.objeto_personas">*{{persona.nombre_completo}} ({{persona.edad}})
+            <br>Habilidades:
+        </p>
+        <p *ngFor="let habilidad of temporal.objeto_habilidades">-{{habilidad.nombre_habilidad}}</p>
+    </div>
+</div>
